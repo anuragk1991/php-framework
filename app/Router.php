@@ -2,13 +2,18 @@
 
 namespace App;
 
+use App\Exceptions\RouteNotFoundException;
+use App\Exceptions\MethodNotAllowedException;
+
 class Router
 {
-	protected $routes = [];
 	protected $path;
+	protected $routes = [];
+	protected $methods = [];
 
-	public function addRoute($uri, $handler)
+	public function addRoute($uri, $handler, $method = [])
 	{
+		$this->methods[$uri] = $method;
 		$this->routes[$uri] = $handler;
 	}
 
@@ -19,6 +24,14 @@ class Router
 
 	public function getResponse()
 	{
+		if(!isset($this->routes[$this->path])){
+			throw new RouteNotFoundException;
+		}
+
+		if(!in_array($_SERVER['REQUEST_METHOD'], $this->methods[$this->path])){
+			throw new MethodNotAllowedException;
+		}
+
 		return $this->routes[$this->path];
 	}
 
