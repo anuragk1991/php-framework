@@ -26,5 +26,13 @@ $container['db'] = function($c){
 	);
 };
 
-echo '<pre>';
-var_dump($container->db);
+$app->get('/home', function(){
+	echo 'Home';
+});
+
+$app->get('/users', function(){
+	echo 'Users';
+});
+
+$app->run();
+

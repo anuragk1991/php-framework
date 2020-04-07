@@ -9,6 +9,12 @@ class Container implements ArrayAccess
 	protected $items = [];
 	protected $cache = [];
 
+	public function __construct($items = []){
+		foreach($items as $key => $value){
+			$this->offsetSet($key, $value);
+		}
+	}
+
 	public function __get($property)
 	{
 		return $this->offsetGet($property);
