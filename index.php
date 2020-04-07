@@ -8,6 +8,12 @@ require('vendor/autoload.php');
 $app = new App\App;
 
 $container = $app->getContainer();
+
+
+$container['errorHandler'] = function(){
+	die(404);
+};
+
 $container['config'] = function(){
 	return [
 		'db_driver' => 'mysql',
@@ -30,9 +36,6 @@ $app->get('/home', function(){
 	echo 'Home';
 });
 
-$app->get('/users', function(){
-	echo 'Users';
-});
 
 $app->run();
 

@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Exceptions\RouteNotFoundException;
+use App\Exceptions\MethodNotAllowedException;
+
 class App
 {
 	protected $container;
@@ -22,8 +25,20 @@ class App
 
 	public function get($uri, $handler)
 	{
-		$this->container->router->addRoute($uri, $handler);
+		$this->container->router->addRoute($uri, $handler, ['GET']);
 	}
+
+	public function post($uri, $handler)
+	{
+		$this->container->router->addRoute($uri, $handler, ['POST']);
+	}
+
+	public function map($uri, $handler, $method = ['GET'])
+	{
+		$this->container->router->addRoute($uri, $handler, $method);
+	}
+
+
 
 	public function run()
 	{
@@ -31,7 +46,24 @@ class App
 		$router = $this->container->router;
 		$router->setPath($path);
 
-		$response = $router->getResponse();
+		try{
+			$response = $router->getResponse();	
+		}catch(RouteNotFoundException $e){
+			if(isset($this->container->errorHandler)){
+				$this->container->errorHandler();
+			}else{
+				return;
+			}
+		}catch(MethodNotAllowedException $e){
+			if(isset($this->container->errorHandler)){
+				$this->container->errorHandler();
+			}else{
+				return;
+			}
+		}
+
+		
+
 		$this->process($response);
 	}
 
